@@ -1,0 +1,9 @@
+{
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "@azure/msal-node": "latest",
+    "googleapis": "latest",
+    "docx": "latest",
+    "dotenv": "latest"
+  }
+}
