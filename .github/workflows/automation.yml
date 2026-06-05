@@ -1,0 +1,38 @@
+name: Automatizar audiências
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - run: node index.js
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+          MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+          MS_CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+          MS_USER_ID: ${{ secrets.MS_USER_ID }}
+
+      - name: Salvar linhas processadas
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add processed.json
+          git commit -m "Atualiza linhas processadas" || echo "Nada para salvar"
+          git push
